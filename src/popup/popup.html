@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Extension</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup" id="popup">
+      <header class="header">
+        <h1 class="title" id="appTitle">My Extension</h1>
+        <div class="header-actions">
+          <span class="host-badge" id="hostBadge"></span>
+          <button
+            class="ui-button ui-button--ghost ui-button--compact theme-toggle"
+            id="themeToggle"
+            type="button"
+            title="Change theme"
+            aria-label="Change theme"
+          >
+            Theme
+          </button>
+        </div>
+      </header>
+
+      <section class="site-section" id="siteSection">
+        <label class="ui-switch ui-switch--compact" for="siteToggleInput">
+          <input
+            id="siteToggleInput"
+            type="checkbox"
+            aria-labelledby="siteToggleLabel"
+            aria-describedby="siteStatus"
+          />
+          <span class="ui-switch__track" aria-hidden="true"></span>
+        </label>
+        <div class="site-info">
+          <span class="site-info__label" id="siteToggleLabel"></span>
+          <span class="site-info__status" id="siteStatus"></span>
+        </div>
+      </section>
+
+      <section class="actions">
+        <button
+          class="ui-button ui-button--secondary ui-button--compact"
+          id="optionsBtn"
+          type="button"
+        >
+          Settings
+        </button>
+      </section>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
