@@ -1,7 +1,7 @@
 @import "../ui/styles/index.css";
 
 body {
-  font-size: 13px;
+  font-size: var(--ui-text-sm);
   line-height: 1.45;
 }
 
@@ -19,16 +19,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px 12px;
+  gap: var(--ui-space-6);
+  padding: var(--ui-space-7) var(--ui-space-8) var(--ui-space-6);
 }
 
 .title {
   margin: 0;
   overflow: hidden;
   color: var(--ui-color-accent);
-  font-size: 17px;
-  font-weight: 700;
+  font-size: var(--ui-text-xl);
+  font-weight: var(--ui-weight-bold);
   letter-spacing: -0.02em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -39,15 +39,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 7px;
+  gap: var(--ui-space-4);
 }
 
 .host-badge {
   max-width: 140px;
   overflow: hidden;
   color: var(--ui-color-text-muted);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--ui-text-2xs);
+  font-weight: var(--ui-weight-medium);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -58,11 +58,11 @@ body {
 
 .theme-toggle {
   min-height: 30px;
-  padding: 4px 9px;
+  padding: var(--ui-space-2) var(--ui-space-5);
   color: var(--ui-color-text-muted);
   border-color: var(--ui-color-border);
   border-radius: var(--ui-radius-pill);
-  font-size: 11px;
+  font-size: var(--ui-text-2xs);
 }
 
 .theme-toggle:hover {
@@ -72,8 +72,8 @@ body {
 .site-section {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: var(--ui-space-6);
+  padding: var(--ui-space-6) var(--ui-space-8);
   background: var(--ui-color-canvas);
   border-block: 1px solid var(--ui-color-border);
 }
@@ -83,18 +83,18 @@ body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--ui-space-1);
 }
 
 .site-info__label {
-  font-size: 13px;
-  font-weight: 650;
+  font-size: var(--ui-text-sm);
+  font-weight: var(--ui-weight-semibold);
 }
 
 .site-info__status {
   overflow: hidden;
   color: var(--ui-color-text-muted);
-  font-size: 11px;
+  font-size: var(--ui-text-2xs);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -102,5 +102,5 @@ body {
 .actions {
   display: flex;
   justify-content: flex-end;
-  padding: 10px 16px 14px;
+  padding: var(--ui-space-5) var(--ui-space-8) var(--ui-space-7);
 }

@@ -1,16 +1,16 @@
 .ui-button {
-  min-height: 40px;
+  min-height: var(--ui-control-height);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 13px;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-4) var(--ui-space-7);
   color: var(--ui-color-text);
   background: var(--ui-color-surface-raised);
   border: 1px solid var(--ui-color-border);
   border-radius: var(--ui-radius-control);
   cursor: pointer;
-  font-weight: 650;
+  font-weight: var(--ui-weight-semibold);
   white-space: nowrap;
   transition:
     color var(--ui-motion-standard) ease,
@@ -40,10 +40,9 @@
 }
 
 .ui-button--compact {
-  min-height: 34px;
-  padding: 6px 11px;
-  border-radius: 9px;
-  font-size: 12px;
+  min-height: var(--ui-control-height-compact);
+  padding: var(--ui-space-3) var(--ui-space-6);
+  font-size: var(--ui-text-xs);
 }
 
 .ui-button--primary {
@@ -81,10 +80,11 @@
   border-color: transparent;
 }
 
+/* Square icon buttons sit inside list rows, a step smaller than a control. */
 .ui-button--icon {
   width: 32px;
   min-height: 32px;
-  padding: 5px;
+  padding: var(--ui-space-3);
   color: var(--ui-color-text-muted);
   background: transparent;
   border-color: transparent;
@@ -93,8 +93,6 @@
 .ui-button--icon.ui-button--compact {
   width: 30px;
   min-height: 30px;
-  padding: 5px;
-  border-radius: 8px;
 }
 
 .ui-button--icon:hover {
@@ -109,8 +107,8 @@
 }
 
 .ui-button__icon {
-  width: 16px;
-  height: 16px;
+  width: var(--ui-icon-size);
+  height: var(--ui-icon-size);
   flex: 0 0 auto;
   fill: currentColor;
 }
@@ -120,21 +118,21 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--ui-space-3);
 }
 
 .ui-field > label,
 .ui-select-field > label {
   color: var(--ui-color-text-muted);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--ui-text-xs);
+  font-weight: var(--ui-weight-semibold);
 }
 
 .ui-input,
 .ui-select {
   width: 100%;
-  min-height: 42px;
-  padding: 9px 11px;
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-3) var(--ui-space-6);
   color: var(--ui-color-text);
   background: var(--ui-color-surface-raised);
   border: 1px solid var(--ui-color-border);
@@ -148,9 +146,8 @@
 
 .ui-input--compact,
 .ui-select--compact {
-  min-height: 36px;
-  padding: 7px 10px;
-  border-radius: 9px;
+  min-height: var(--ui-control-height-compact);
+  padding: var(--ui-space-2) var(--ui-space-5);
 }
 
 .ui-input::placeholder {
@@ -170,18 +167,38 @@
   border-color: var(--ui-color-danger);
 }
 
+/*
+ * The chevron is two diagonal strokes drawn with gradients rather than an SVG
+ * data URL, so it takes its colour from a token and follows the theme.
+ */
 .ui-select {
+  --ui-select-chevron-color: var(--ui-color-text-muted);
   appearance: none;
   padding-right: 38px;
-  background-image: var(--ui-select-chevron);
+  background-image:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.75px),
+      var(--ui-select-chevron-color) calc(50% - 0.75px) calc(50% + 0.75px),
+      transparent calc(50% + 0.75px)
+    ),
+    linear-gradient(
+      to top left,
+      transparent calc(50% - 0.75px),
+      var(--ui-select-chevron-color) calc(50% - 0.75px) calc(50% + 0.75px),
+      transparent calc(50% + 0.75px)
+    );
   background-repeat: no-repeat;
-  background-position: right 16px center;
+  background-size: 5px 5px;
+  background-position:
+    right 21px center,
+    right 16px center;
 }
 
 .ui-field__error {
   display: none;
   color: var(--ui-color-danger);
-  font-size: 12px;
+  font-size: var(--ui-text-xs);
 }
 
 .ui-input[aria-invalid="true"] ~ .ui-field__error {
@@ -226,7 +243,7 @@
   height: 20px;
   background: var(--ui-color-surface-raised);
   border-radius: 50%;
-  box-shadow: 0 1px 4px rgba(18, 28, 45, 0.28);
+  box-shadow: var(--ui-shadow-control);
   transition: transform var(--ui-motion-slow) var(--ui-motion-ease-out);
 }
 
@@ -254,10 +271,10 @@
 }
 
 .ui-badge {
-  padding: 3px 8px;
+  padding: var(--ui-space-1) var(--ui-space-4);
   border-radius: var(--ui-radius-pill);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: var(--ui-text-2xs);
+  font-weight: var(--ui-weight-semibold);
 }
 
 .ui-badge--success {
@@ -280,16 +297,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 9px 4px 9px 10px;
+  gap: var(--ui-space-8);
+  padding: var(--ui-space-5) var(--ui-space-2) var(--ui-space-5)
+    var(--ui-space-5);
   border-bottom: 1px solid var(--ui-color-border);
   transition: background var(--ui-motion-standard) ease;
 }
 
 .ui-list-row--compact {
   min-height: 42px;
-  gap: 8px;
-  padding: 6px 2px 6px 8px;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-3) var(--ui-space-1) var(--ui-space-3)
+    var(--ui-space-4);
 }
 
 .ui-list-row:first-child {
@@ -307,11 +326,11 @@
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 12px;
+  gap: var(--ui-space-6);
 }
 
 .ui-list-row--compact .ui-list-row__main {
-  gap: 7px;
+  gap: var(--ui-space-4);
 }
 
 .ui-list-row__content {
@@ -326,15 +345,15 @@
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 4px;
+  gap: var(--ui-space-2);
 }
 
 .ui-list-row--compact .ui-list-row__actions {
-  gap: 1px;
+  gap: var(--ui-space-1);
 }
 
 .ui-empty-state {
-  padding: 24px 10px;
+  padding: var(--ui-space-10) var(--ui-space-5);
   color: var(--ui-color-text-muted);
   line-height: 1.55;
   text-align: center;
@@ -342,8 +361,8 @@
 }
 
 .ui-empty-state--compact {
-  padding: 20px 16px;
-  font-size: 12px;
+  padding: var(--ui-space-9) var(--ui-space-8);
+  font-size: var(--ui-text-xs);
   line-height: 1.5;
 }
 
@@ -352,12 +371,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-5) var(--ui-space-6);
   color: var(--ui-color-text);
   background: var(--ui-color-surface-raised);
   border: 1px solid var(--ui-color-border-strong);
-  border-radius: 11px;
+  border-radius: var(--ui-radius-control);
   box-shadow: var(--ui-shadow-overlay);
 }
 
@@ -374,13 +393,13 @@
 }
 
 .ui-toast__action {
-  padding: 3px 7px;
+  padding: var(--ui-space-1) var(--ui-space-4);
   color: var(--ui-color-accent);
   background: transparent;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--ui-radius-sm);
   cursor: pointer;
-  font-weight: 700;
+  font-weight: var(--ui-weight-bold);
 }
 
 .ui-toast__action:hover {

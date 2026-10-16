@@ -36,10 +36,14 @@ copy. Then it removes this section and deletes itself. `--id` defaults to
 
 Then:
 
-1. Replace `icons/logo.svg` with your artwork.
-2. Write the feature in `src/content.ts` (page behaviour), `src/background.ts`
+1. Set the brand colour with `--ui-color-accent` and `--ui-color-on-accent` in
+   `src/ui/styles/tokens.css`. The hover, tint, and focus shades derive from
+   the accent, and so does `currentColor` in the icon. `src/ui/README.md`
+   lists the other tokens.
+2. Replace `icons/logo.svg` with your artwork.
+3. Write the feature in `src/content.ts` (page behaviour), `src/background.ts`
    (events), and the popup and options pages.
-3. Cut `permissions` and `host_permissions` in `manifest.json` down to what
+4. Cut `permissions` and `host_permissions` in `manifest.json` down to what
    the extension needs, then update `PRIVACY.html` and `store/listing.md` to
    match.
 
@@ -48,7 +52,8 @@ Then:
 ## Requirements
 
 - Bun, and Node.js 20.19+ for `node --test`.
-- Chrome, Edge, Brave, or another Chromium browser, or Firefox 121+.
+- Chrome 123+ (or Edge, Brave, and other Chromium browsers), or Firefox 121+.
+  The UI's CSS uses `light-dark()`, which sets those minimums.
 
 ## Install and build
 

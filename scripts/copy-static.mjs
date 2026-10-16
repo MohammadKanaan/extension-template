@@ -4,7 +4,7 @@
  *
  * `--target=firefox` (or TARGET=firefox in the environment) swaps in a
  * Firefox-compatible manifest that adds background.scripts (Firefox MV3 uses
- * scripts, not service_worker).
+ * scripts, not service_worker) and drops the Chrome-only minimum_chrome_version.
  */
 import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -38,6 +38,7 @@ function buildManifest() {
       ...background
     } = manifest.background;
     manifest.background = { ...background, scripts: ["background.js"] };
+    delete manifest.minimum_chrome_version;
   }
   return manifest;
 }

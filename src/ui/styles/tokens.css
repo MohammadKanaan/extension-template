@@ -1,84 +1,119 @@
+/*
+ * Design tokens. Every colour is written once, as light-dark(<light>, <dark>).
+ * The active side follows `color-scheme`: the system preference by default,
+ * or pinned by data-theme="light" | "dark" on the document element.
+ *
+ * To restyle, override tokens on :root in an unlayered stylesheet; it wins
+ * over these layered defaults. Derived tokens (the accent shades) resolve
+ * where they are declared, so override what they derive from on :root, not
+ * on a descendant.
+ */
 :root {
-  color-scheme: light;
-  --ui-color-canvas: #e8ecf2;
-  --ui-color-surface: #f7f9fc;
-  --ui-color-surface-raised: #ffffff;
-  --ui-color-surface-hover: #edf1f7;
-  --ui-color-text: #131a22;
-  --ui-color-text-muted: #5a6673;
-  --ui-color-accent: #1a56c4;
-  --ui-color-accent-hover: #133f96;
-  --ui-color-accent-soft: #dfe8fb;
-  --ui-color-on-accent: #ffffff;
-  --ui-color-border: #d2dae4;
-  --ui-color-border-strong: #b2becd;
-  --ui-color-danger: #b3251c;
-  --ui-color-danger-soft: #fce9e7;
-  --ui-color-success: #146b4a;
-  --ui-color-success-soft: #e0f1e9;
-  --ui-focus-ring: rgba(26, 86, 196, 0.26);
-  --ui-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%235a6673' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/%3E%3C/svg%3E");
-  --ui-shadow-raised: 0 14px 36px rgba(18, 28, 45, 0.14);
-  --ui-shadow-overlay: 0 12px 30px rgba(18, 28, 45, 0.16);
+  color-scheme: light dark;
+
+  /* ── Colour ──────────────────────────────────────────────────────── */
+
+  --ui-color-canvas: light-dark(#e8ecf2, #10141a);
+  --ui-color-surface: light-dark(#f7f9fc, #191f27);
+  --ui-color-surface-raised: light-dark(#ffffff, #212832);
+  --ui-color-surface-hover: light-dark(#edf1f7, #262e3a);
+  --ui-color-text: light-dark(#131a22, #e9eef5);
+  --ui-color-text-muted: light-dark(#5a6673, #97a4b3);
+  --ui-color-border: light-dark(#d2dae4, #2d3644);
+  --ui-color-border-strong: light-dark(#b2becd, #414c5c);
+  --ui-color-danger: light-dark(#b3251c, #ff8f85);
+  --ui-color-danger-soft: light-dark(#fce9e7, #44201d);
+  --ui-color-success: light-dark(#146b4a, #6fd2a6);
+  --ui-color-success-soft: light-dark(#e0f1e9, #16302a);
+
+  /* Brand. The shades below derive from it, so a rebrand is these two lines. */
+  --ui-color-accent: light-dark(#1a56c4, #6ea8fe);
+  --ui-color-on-accent: light-dark(#ffffff, #0a1120);
+
+  /* Hover moves away from the background: darker on light, lighter on dark. */
+  --ui-color-accent-hover: color-mix(
+    in srgb,
+    var(--ui-color-accent),
+    light-dark(#000, #fff) 27%
+  );
+  /* A tint of the accent over the base surface. */
+  --ui-color-accent-soft: color-mix(
+    in srgb,
+    var(--ui-color-accent) 15%,
+    light-dark(var(--ui-color-surface-raised), var(--ui-color-canvas))
+  );
+  --ui-focus-ring: color-mix(in srgb, var(--ui-color-accent) 28%, transparent);
+
+  /* ── Elevation ───────────────────────────────────────────────────── */
+
+  --ui-shadow-color: light-dark(rgb(18 28 45 / 15%), rgb(0 0 0 / 32%));
+  --ui-shadow-raised: 0 14px 36px var(--ui-shadow-color);
+  --ui-shadow-overlay: 0 12px 30px var(--ui-shadow-color);
+  /* Small lift under switch thumbs and similar knobs. */
+  --ui-shadow-control: 0 1px 4px
+    light-dark(rgb(18 28 45 / 28%), rgb(0 0 0 / 40%));
+
+  /* ── Typography ──────────────────────────────────────────────────── */
+
   --ui-font-sans:
     "Avenir Next", Avenir, "Segoe UI Variable", "Segoe UI", Helvetica,
     sans-serif;
   --ui-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --ui-text-2xs: 11px;
+  --ui-text-xs: 12px;
+  --ui-text-sm: 13px;
+  --ui-text-md: 14px;
+  --ui-text-lg: 15px;
+  --ui-text-xl: 17px;
+  --ui-text-display: clamp(25px, 4vw, 34px);
+
+  --ui-weight-medium: 600;
+  --ui-weight-semibold: 650;
+  --ui-weight-bold: 700;
+  --ui-weight-heavy: 800;
+
+  /* ── Spacing ─────────────────────────────────────────────────────── */
+
+  --ui-space-1: 2px;
+  --ui-space-2: 4px;
+  --ui-space-3: 6px;
+  --ui-space-4: 8px;
+  --ui-space-5: 10px;
+  --ui-space-6: 12px;
+  --ui-space-7: 14px;
+  --ui-space-8: 16px;
+  --ui-space-9: 20px;
+  --ui-space-10: 24px;
+  --ui-space-11: 28px;
+  --ui-space-12: 32px;
+
+  /* ── Controls ────────────────────────────────────────────────────── */
+
+  /* Buttons, inputs, and selects share heights so they line up in a row. */
+  --ui-control-height: 40px;
+  --ui-control-height-compact: 34px;
+  --ui-icon-size: 16px;
+
+  /* ── Shape ───────────────────────────────────────────────────────── */
+
+  --ui-radius-sm: 6px;
   --ui-radius-control: 10px;
   --ui-radius-panel: 18px;
   --ui-radius-pill: 999px;
+
+  /* ── Motion ──────────────────────────────────────────────────────── */
+
   --ui-motion-fast: 100ms;
   --ui-motion-standard: 160ms;
   --ui-motion-slow: 180ms;
   --ui-motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-[data-theme="dark"] {
-  color-scheme: dark;
-  --ui-color-canvas: #10141a;
-  --ui-color-surface: #191f27;
-  --ui-color-surface-raised: #212832;
-  --ui-color-surface-hover: #262e3a;
-  --ui-color-text: #e9eef5;
-  --ui-color-text-muted: #97a4b3;
-  --ui-color-accent: #6ea8fe;
-  --ui-color-accent-hover: #9cc4ff;
-  --ui-color-accent-soft: #1d2b45;
-  --ui-color-on-accent: #0a1120;
-  --ui-color-border: #2d3644;
-  --ui-color-border-strong: #414c5c;
-  --ui-color-danger: #ff8f85;
-  --ui-color-danger-soft: #44201d;
-  --ui-color-success: #6fd2a6;
-  --ui-color-success-soft: #16302a;
-  --ui-focus-ring: rgba(110, 168, 254, 0.3);
-  --ui-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%2397a4b3' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/%3E%3C/svg%3E");
-  --ui-shadow-raised: 0 18px 44px rgba(0, 0, 0, 0.34);
-  --ui-shadow-overlay: 0 12px 30px rgba(0, 0, 0, 0.3);
+[data-theme="light"] {
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --ui-color-canvas: #10141a;
-    --ui-color-surface: #191f27;
-    --ui-color-surface-raised: #212832;
-    --ui-color-surface-hover: #262e3a;
-    --ui-color-text: #e9eef5;
-    --ui-color-text-muted: #97a4b3;
-    --ui-color-accent: #6ea8fe;
-    --ui-color-accent-hover: #9cc4ff;
-    --ui-color-accent-soft: #1d2b45;
-    --ui-color-on-accent: #0a1120;
-    --ui-color-border: #2d3644;
-    --ui-color-border-strong: #414c5c;
-    --ui-color-danger: #ff8f85;
-    --ui-color-danger-soft: #44201d;
-    --ui-color-success: #6fd2a6;
-    --ui-color-success-soft: #16302a;
-    --ui-focus-ring: rgba(110, 168, 254, 0.3);
-    --ui-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%2397a4b3' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/%3E%3C/svg%3E");
-    --ui-shadow-raised: 0 18px 44px rgba(0, 0, 0, 0.34);
-    --ui-shadow-overlay: 0 12px 30px rgba(0, 0, 0, 0.3);
-  }
+[data-theme="dark"] {
+  color-scheme: dark;
 }
