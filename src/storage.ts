@@ -16,19 +16,33 @@ function concreteTheme(value: unknown): Theme {
   return value === "light" || value === "dark" ? value : systemTheme();
 }
 
+/**
+ * Settings as the extension expects them, from whatever storage holds: missing
+ * or malformed fields (say, written by an older version on another synced
+ * device) fall back to the defaults.
+ */
+function normalizeSettings(raw: unknown): Settings {
+  const stored = (raw && typeof raw === "object" ? raw : {}) as Partial<
+    Record<keyof Settings, unknown>
+  >;
+  return {
+    enabledByDefault:
+      typeof stored.enabledByDefault === "boolean"
+        ? stored.enabledByDefault
+        : DEFAULT_SETTINGS.enabledByDefault,
+    theme: concreteTheme(stored.theme),
+  };
+}
+
+function normalizeSiteOverrides(raw: unknown): SiteOverrides {
+  return raw && typeof raw === "object" ? (raw as SiteOverrides) : {};
+}
+
 export async function loadSettings(): Promise<Settings> {
   const { [STORAGE_KEYS.settings]: raw } = await b.storage.sync.get(
     STORAGE_KEYS.settings,
   );
-  if (raw && typeof raw === "object") {
-    const partial = raw as Partial<Settings>;
-    return {
-      ...DEFAULT_SETTINGS,
-      ...partial,
-      theme: concreteTheme(partial.theme),
-    };
-  }
-  return { ...DEFAULT_SETTINGS, theme: systemTheme() };
+  return normalizeSettings(raw);
 }
 
 export async function saveSettings(s: Settings): Promise<void> {
@@ -39,8 +53,7 @@ export async function loadSiteOverrides(): Promise<SiteOverrides> {
   const { [STORAGE_KEYS.siteOverrides]: raw } = await b.storage.sync.get(
     STORAGE_KEYS.siteOverrides,
   );
-  if (raw && typeof raw === "object") return raw as SiteOverrides;
-  return {};
+  return normalizeSiteOverrides(raw);
 }
 
 export async function saveSiteOverrides(o: SiteOverrides): Promise<void> {
@@ -57,11 +70,11 @@ export function onStorageChanged(
     if (area !== "sync") return;
     const out: { settings?: Settings; siteOverrides?: SiteOverrides } = {};
     if (STORAGE_KEYS.settings in changes)
-      out.settings = changes[STORAGE_KEYS.settings].newValue as
-        Settings | undefined;
+      out.settings = normalizeSettings(changes[STORAGE_KEYS.settings].newValue);
     if (STORAGE_KEYS.siteOverrides in changes)
-      out.siteOverrides = changes[STORAGE_KEYS.siteOverrides].newValue as
-        SiteOverrides | undefined;
+      out.siteOverrides = normalizeSiteOverrides(
+        changes[STORAGE_KEYS.siteOverrides].newValue,
+      );
     if (Object.keys(out).length > 0) cb(out);
   };
   b.storage.onChanged.addListener(listener);

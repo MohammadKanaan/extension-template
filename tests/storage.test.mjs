@@ -75,3 +75,17 @@ test("onStorageChanged reports sync changes until unsubscribed", async () => {
   await storage.saveSiteOverrides({});
   assert.deepEqual(seen, [{ siteOverrides: { "example.com": true } }]);
 });
+
+test("onStorageChanged normalizes settings like loadSettings does", async () => {
+  mockStorage.clear();
+  const seen = [];
+  const unsubscribe = storage.onStorageChanged((changes) => seen.push(changes));
+  // e.g. written by an older version of the extension on another device
+  await mockStorage.sync.set({ settings: { enabledByDefault: "yes" } });
+  await mockStorage.sync.set({ settings: undefined, siteOverrides: null });
+  unsubscribe();
+  assert.deepEqual(seen, [
+    { settings: DEFAULT_SETTINGS },
+    { settings: DEFAULT_SETTINGS, siteOverrides: {} },
+  ]);
+});
