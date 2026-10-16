@@ -88,6 +88,8 @@ test("init replaces every placeholder and removes itself", (t) => {
   assert.match(listing, /^https:\/\/github\.com\/me\/tabs\/issues$/m);
 
   const readme = readFileSync(resolve(fixture, "README.md"), "utf8");
+  assert.match(readme, /^# Tab "Tamer"$/m);
+  assert.doesNotMatch(readme, /WebExtension Template/);
   assert.doesNotMatch(readme, /template:start/);
   assert.doesNotMatch(readme, /bun run init/);
 

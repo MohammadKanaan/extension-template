@@ -2,6 +2,7 @@
   "name": "my-extension",
   "version": "0.1.0",
   "description": "A cross-browser WebExtension.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "engines": {

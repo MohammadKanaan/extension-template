@@ -1,8 +1,10 @@
-# My Extension
+# WebExtension Template
 
 A cross-browser WebExtension.
 
 <!-- template:start -->
+
+[![CI](https://github.com/MohammadKanaan/webextension-template/actions/workflows/ci.yml/badge.svg)](https://github.com/MohammadKanaan/webextension-template/actions/workflows/ci.yml)
 
 ## Start a new extension from this template
 
@@ -152,3 +154,7 @@ store/                 store listing copy
   predictable. Chrome's `use_dynamic_url` would hide it, but Chrome resolves a
   module's relative imports against the fixed ID, so the content script stops
   loading. Firefox gives each install a random ID, so it isn't affected.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

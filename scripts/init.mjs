@@ -3,8 +3,8 @@
  *
  * Replaces the template placeholders (name, slug, Firefox add-on id,
  * description, contact email, and repository URL) in every file that carries
- * them, drops the template-only section of the README, then deletes this
- * script and its test.
+ * them, names the README after the project and drops its template-only
+ * section, then deletes this script and its test.
  *
  * Usage:
  *   bun run init --name "Tab Tamer" [--id tab-tamer@you.dev] [--description "..."]
@@ -39,6 +39,9 @@ const FILES = [
   "src/popup/popup.html",
   "src/options/options.html",
 ];
+
+/** The README heading, which names the template until init names the project. */
+const TEMPLATE_TITLE = /^# WebExtension Template$/m;
 
 const TEMPLATE_SECTION =
   /<!-- template:start -->[\s\S]*?<!-- template:end -->\n*/g;
@@ -109,6 +112,7 @@ for (const file of FILES) {
   const path = resolve(root, file);
   if (!existsSync(path)) fail(`${file} is missing — was init already run?`);
   let text = readFileSync(path, "utf8").replace(TEMPLATE_SECTION, "");
+  if (file === "README.md") text = text.replace(TEMPLATE_TITLE, `# ${name}`);
   for (const [from, to] of replacements) {
     text = text.replaceAll(from, encode(to, file));
   }
