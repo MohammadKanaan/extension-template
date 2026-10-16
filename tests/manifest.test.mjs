@@ -1,9 +1,29 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { cpSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, posix, resolve } from "node:path";
 
-const dist = resolve(import.meta.dirname, "..", "dist");
+const root = resolve(import.meta.dirname, "..");
+const dist = resolve(root, "dist");
+
+/** Run copy-static for Firefox in a scratch copy and return the manifest it writes. */
+function buildFirefoxManifest(t) {
+  const fixture = mkdtempSync(resolve(tmpdir(), "extension-firefox-"));
+  t.after(() => rmSync(fixture, { recursive: true, force: true }));
+  for (const entry of ["manifest.json", "scripts", "icons", "src"]) {
+    cpSync(resolve(root, entry), resolve(fixture, entry), { recursive: true });
+  }
+  execFileSync(
+    process.execPath,
+    [resolve(fixture, "scripts/copy-static.mjs"), "--target=firefox"],
+    { cwd: fixture, stdio: "pipe" },
+  );
+  return JSON.parse(
+    readFileSync(resolve(fixture, "dist/manifest.json"), "utf8"),
+  );
+}
 const IMPORT_RE = /(?:from|import)\s*\(?\s*["'](\.{1,2}\/[^"']+)["']/g;
 
 /** Collect every module reachable from `entry` via relative imports (dist-relative paths). */
@@ -42,4 +62,14 @@ test("manifest declares the AMO data collection consent", () => {
   // AMO refuses new submissions that omit this key. The extension transmits nothing,
   // and "none" cannot be combined with any other data type.
   assert.deepEqual(gecko.data_collection_permissions, { required: ["none"] });
+});
+
+test("the Firefox manifest loads background.js as a module", (t) => {
+  const manifest = buildFirefoxManifest(t);
+  // background.js starts with an import, which is a SyntaxError in a classic script.
+  assert.deepEqual(manifest.background, {
+    scripts: ["background.js"],
+    type: "module",
+  });
+  assert.equal(manifest.minimum_chrome_version, undefined);
 });

@@ -3,8 +3,10 @@
  * Keeps dist/ self-contained so it can be loaded unpacked as-is.
  *
  * `--target=firefox` (or TARGET=firefox in the environment) swaps in a
- * Firefox-compatible manifest that adds background.scripts (Firefox MV3 uses
- * scripts, not service_worker) and drops the Chrome-only minimum_chrome_version.
+ * Firefox-compatible manifest. It replaces service_worker with
+ * background.scripts (Firefox MV3 uses scripts) and keeps `type: "module"`,
+ * because background.js imports other modules. It also drops the Chrome-only
+ * minimum_chrome_version.
  */
 import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -32,11 +34,8 @@ function buildManifest() {
     readFileSync(resolve(root, "manifest.json"), "utf8"),
   );
   if (target === "firefox") {
-    const {
-      service_worker: _serviceWorker,
-      type: _type,
-      ...background
-    } = manifest.background;
+    const { service_worker: _serviceWorker, ...background } =
+      manifest.background;
     manifest.background = { ...background, scripts: ["background.js"] };
     delete manifest.minimum_chrome_version;
   }
