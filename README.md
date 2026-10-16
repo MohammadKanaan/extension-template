@@ -26,13 +26,15 @@ Copy the template, then name it:
 cp -R webextension-template my-new-extension   # or "Use this template" on GitHub
 cd my-new-extension && rm -rf .git && git init
 bun install
-bun run init --name "Tab Tamer" --id tab-tamer@you.dev --description "Keeps tabs in check."
+bun run init --name "Tab Tamer" --id tab-tamer@you.dev --description "Keeps tabs in check." \
+  --email you@you.dev --repo https://github.com/you/tab-tamer
 ```
 
-`init` writes the name, package name, Firefox add-on id, and description into
-the manifest, `package.json`, the pages, the privacy policy, and the store
-copy. Then it removes this section and deletes itself. `--id` defaults to
-`<slug>@example.com`. Leave out `--description` and the placeholder stays.
+`init` writes the name, package name, Firefox add-on id, description, contact
+email, and repository URL into the manifest, `package.json`, the pages, the
+privacy policy, and the store copy. Then it removes this section and deletes
+itself. `--id` defaults to `<slug>@example.com`. Leave out `--description`,
+`--email`, or `--repo` and the placeholder stays.
 
 Then:
 

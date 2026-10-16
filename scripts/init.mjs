@@ -1,12 +1,14 @@
 /**
  * Turn a fresh copy of the template into a named extension.
  *
- * Replaces the template placeholders (name, slug, Firefox add-on id, and
- * description) in every file that carries them, drops the template-only
- * section of the README, then deletes this script and its test.
+ * Replaces the template placeholders (name, slug, Firefox add-on id,
+ * description, contact email, and repository URL) in every file that carries
+ * them, drops the template-only section of the README, then deletes this
+ * script and its test.
  *
  * Usage:
  *   bun run init --name "Tab Tamer" [--id tab-tamer@you.dev] [--description "..."]
+ *     [--email you@you.dev] [--repo https://github.com/you/tab-tamer]
  */
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { extname, resolve } from "node:path";
@@ -20,6 +22,8 @@ const PLACEHOLDER = {
   name: "My Extension",
   slug: "my-extension",
   description: "A cross-browser WebExtension.",
+  email: "you@example.com",
+  repo: "https://github.com/your-username/my-extension",
 };
 
 /** Every file that mentions a placeholder. */
@@ -51,6 +55,8 @@ try {
       name: { type: "string" },
       id: { type: "string" },
       description: { type: "string" },
+      email: { type: "string" },
+      repo: { type: "string" },
     },
   }));
 } catch (err) {
@@ -69,6 +75,8 @@ if (!slug)
 
 const id = values.id?.trim() || `${slug}@example.com`;
 const description = values.description?.trim() || PLACEHOLDER.description;
+const email = values.email?.trim() || PLACEHOLDER.email;
+const repo = values.repo?.trim().replace(/\/+$/, "") || PLACEHOLDER.repo;
 
 /** Escape a value for the kind of file it lands in. */
 function encode(value, file) {
@@ -86,9 +94,12 @@ function encode(value, file) {
   return value;
 }
 
-// The id contains the slug, so it is replaced first.
+// The id and repository URL contain the slug, so they are replaced first. An
+// omitted --repo keeps the placeholder owner but still picks up the new slug.
 const replacements = [
   [PLACEHOLDER.id, id],
+  [PLACEHOLDER.repo, repo],
+  [PLACEHOLDER.email, email],
   [PLACEHOLDER.name, name],
   [PLACEHOLDER.slug, slug],
   [PLACEHOLDER.description, description],
@@ -117,5 +128,13 @@ if (!values.id) {
   console.log(
     `note: set a real Firefox add-on id in manifest.json before publishing to AMO`,
   );
+}
+if (!values.email) {
+  console.log(
+    `note: set a real contact email in PRIVACY.html before publishing`,
+  );
+}
+if (!values.repo) {
+  console.log(`note: set the repository URL in store/listing.md`);
 }
 console.log("next: replace icons/logo.svg, then run `bun run build`");

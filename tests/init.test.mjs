@@ -47,6 +47,10 @@ test("init replaces every placeholder and removes itself", (t) => {
     "tabs@me.dev",
     "--description",
     "Tames <tabs>.",
+    "--email",
+    "help@me.dev",
+    "--repo",
+    "https://github.com/me/tabs/",
   ]);
 
   const manifest = JSON.parse(
@@ -75,6 +79,13 @@ test("init replaces every placeholder and removes itself", (t) => {
     readFileSync(resolve(fixture, "src/options/options.html"), "utf8"),
     /Tames &lt;tabs&gt;\./,
   );
+  assert.match(
+    readFileSync(resolve(fixture, "PRIVACY.html"), "utf8"),
+    /href="mailto:help@me\.dev"/,
+  );
+  const listing = readFileSync(resolve(fixture, "store/listing.md"), "utf8");
+  assert.match(listing, /^https:\/\/github\.com\/me\/tabs$/m);
+  assert.match(listing, /^https:\/\/github\.com\/me\/tabs\/issues$/m);
 
   const readme = readFileSync(resolve(fixture, "README.md"), "utf8");
   assert.doesNotMatch(readme, /template:start/);
@@ -90,7 +101,11 @@ test("init replaces every placeholder and removes itself", (t) => {
     "src/content-loader.ts",
   ]) {
     const text = readFileSync(resolve(fixture, file), "utf8");
-    assert.doesNotMatch(text, /My Extension|my-extension/, file);
+    assert.doesNotMatch(
+      text,
+      /My Extension|my-extension|you@example\.com|your-username/,
+      file,
+    );
   }
 
   assert.equal(existsSync(resolve(fixture, "scripts/init.mjs")), false);
@@ -108,6 +123,10 @@ test("init derives a placeholder Firefox id from the name", (t) => {
     "read-later@example.com",
   );
   assert.equal(manifest.description, "A cross-browser WebExtension.");
+  assert.match(
+    readFileSync(resolve(fixture, "store/listing.md"), "utf8"),
+    /^https:\/\/github\.com\/your-username\/read-later$/m,
+  );
 });
 
 test("init refuses to run without a name", (t) => {
