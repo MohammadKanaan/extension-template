@@ -64,6 +64,11 @@
     <ul>
       <li><code>storage</code>. Reads and writes your settings.</li>
       <li>
+        <code>activeTab</code>. When you open the toolbar popup, reads the
+        current tab's address so the popup can show and change the setting for
+        that site. The address is not stored unless you set a per-site override.
+      </li>
+      <li>
         <code>&lt;all_urls&gt;</code>. TODO: explain why the content script runs
         on every page, and what it does and does not read.
       </li>

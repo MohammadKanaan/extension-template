@@ -51,6 +51,7 @@ Settings and per-site overrides use sync storage, so your browser can carry them
 
 Permissions
 - storage: saves your settings.
+- activeTab: lets the toolbar popup read the current site's address, to show and change its setting.
 - Access to all sites. TODO: why.
 
 My Extension is free and MIT licensed.
@@ -66,10 +67,11 @@ TODO
 
 Permission justifications
 
-| Permission                    | Justification                                                                       |
-| ----------------------------- | ----------------------------------------------------------------------------------- |
-| `storage`                     | Saves the user's settings and per-site overrides in synchronized extension storage. |
-| Host permission, `<all_urls>` | TODO                                                                                |
+| Permission                    | Justification                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `storage`                     | Saves the user's settings and per-site overrides in synchronized extension storage.             |
+| `activeTab`                   | Lets the toolbar popup read the current tab's hostname to show and change its per-site setting. |
+| Host permission, `<all_urls>` | TODO                                                                                            |
 
 Data usage
 

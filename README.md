@@ -47,7 +47,9 @@ Then:
    (events), and the popup and options pages.
 4. Cut `permissions` and `host_permissions` in `manifest.json` down to what
    the extension needs, then update `PRIVACY.html` and `store/listing.md` to
-   match.
+   match. Keep `activeTab`. The popup reads the current tab's URL through it,
+   so the per-site switch still works once `host_permissions` stops covering
+   every site.
 
 <!-- template:end -->
 

@@ -12,7 +12,7 @@
     "128": "icons/icon-128.png"
   },
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],
 
   "background": {
