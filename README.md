@@ -6,155 +6,53 @@ A cross-browser WebExtension.
 
 [![CI](https://github.com/MohammadKanaan/webextension-template/actions/workflows/ci.yml/badge.svg)](https://github.com/MohammadKanaan/webextension-template/actions/workflows/ci.yml)
 
-## Start a new extension from this template
+Manifest V3 template for Chromium and Firefox. One TypeScript codebase, no framework. It ships a background script, an ES-module content script, a popup with a per-site switch, an options page, settings in sync storage, a light/dark UI kit in `src/ui/`, store packaging, and CI.
 
-This is a template for Manifest V3 extensions that run in Chromium browsers and
-Firefox from one TypeScript codebase. It comes with:
-
-- A content script that loads as an ES module. `src/content-loader.ts` imports
-  `src/content.ts`, and a test fails if one of its imports is missing from
-  `web_accessible_resources`.
-- A background script, a toolbar popup with a per-site on/off switch, and an
-  options page with a global default and a light/dark theme.
-- Settings and per-site overrides in sync storage, with change notifications.
-- A framework-free UI kit in `src/ui/` with buttons, switches, inputs, lists,
-  and toasts in light and dark themes.
-- Icons generated from one SVG, Chrome `.zip` and Firefox `.xpi` packaging,
-  ESLint, strict TypeScript, `node --test`, and GitHub Actions CI.
-
-Copy the template, then name it:
+## Start an extension
 
 ```bash
-cp -R webextension-template my-new-extension   # or "Use this template" on GitHub
-cd my-new-extension && rm -rf .git && git init
+cp -R webextension-template sample-extension   # or "Use this template" on GitHub
+cd sample-extension && rm -rf .git && git init
 bun install
-bun run init --name "Tab Tamer" --id tab-tamer@you.dev --description "Keeps tabs in check." \
-  --email you@you.dev --repo https://github.com/you/tab-tamer
+bun run init --name "Sample Extension" --id sample-extension@you.dev --description "A sample extension." \
+  --email you@you.dev --repo https://github.com/you/sample-extension
 ```
 
-`init` writes the name, package name, Firefox add-on id, description, contact
-email, and repository URL into the manifest, `package.json`, the pages, the
-privacy policy, and the store copy. Then it removes this section and deletes
-itself. `--id` defaults to `<slug>@example.com`. Leave out `--description`,
-`--email`, or `--repo` and the placeholder stays.
+`init` writes these values into the manifest, `package.json`, pages, privacy policy, and store copy, then removes this section and deletes itself. Omitted flags keep their placeholders. `--id` defaults to `<slug>@example.com`.
 
 Then:
 
-1. Set the brand colour with `--ui-color-accent` and `--ui-color-on-accent` in
-   `src/ui/styles/tokens.css`. The hover, tint, and focus shades derive from
-   the accent, and so does `currentColor` in the icon. `src/ui/README.md`
-   lists the other tokens.
-2. Replace `icons/logo.svg` with your artwork.
-3. Write the feature in `src/content.ts` (page behaviour), `src/background.ts`
-   (events), and the popup and options pages.
-4. Cut `permissions` and `host_permissions` in `manifest.json` down to what
-   the extension needs, then update `PRIVACY.html` and `store/listing.md` to
-   match. Keep `activeTab`. The popup reads the current tab's URL through it,
-   so the per-site switch still works once `host_permissions` stops covering
-   every site.
+1. Set `--ui-color-accent` and `--ui-color-on-accent` in `src/ui/styles/tokens.css`. The other shades and the icon derive from them.
+2. Replace `icons/logo.svg`.
+3. Write the feature in `src/content.ts`, `src/background.ts`, and the popup and options pages.
+4. Trim `permissions` and `host_permissions` in `manifest.json`, then update `PRIVACY.html` and `store/listing.md`. Keep `activeTab`, since the per-site switch reads the tab's URL through it.
 
 <!-- template:end -->
 
-## Requirements
+## Build
 
-- Bun, and Node.js 20.19+ for `node --test`.
-- Chrome 123+ (or Edge, Brave, and other Chromium browsers), or Firefox 121+.
-  The UI's CSS uses `light-dark()`, which sets those minimums.
-
-## Install and build
-
-Install dependencies, then build for Chromium:
+Needs Bun and Node 20.19+. The CSS uses `light-dark()`, so it runs in Chrome 123+ and Firefox 121+.
 
 ```bash
-bun install --frozen-lockfile
-bun run build
+bun install
+bun run build            # Chromium, to dist/
+bun run build:firefox    # Firefox, to dist/
+bun run watch            # recompile TypeScript only
+bun run test             # build, then node --test
+bun run lint && bun run typecheck
+bun run package:chrome   # artifacts/*-chrome.zip
+bun run package:firefox  # artifacts/*-firefox.xpi
 ```
 
-The build writes the unpacked extension to `dist/`.
+In Chrome, open `chrome://extensions`, turn on Developer mode, and load `dist/` unpacked. In Firefox, open `about:debugging#/runtime/this-firefox`, choose Load Temporary Add-on, and pick `dist/manifest.json`. Firefox drops it on restart.
 
-For local development:
+## Notes
 
-```bash
-bun run watch      # Recompile TypeScript on changes
-bun run typecheck  # Check types without writing dist/
-bun run lint       # ESLint over src/, scripts/ and tests/
-bun run format     # Format with Prettier
-bun run test       # Build, then run the Node test suite
-bun run build:firefox    # Build with the Firefox manifest
-bun run package:chrome   # Build, then zip dist/ to artifacts/*-chrome.zip
-bun run package:firefox  # Build, then zip dist/ to artifacts/*-firefox.xpi
-```
-
-`tsc --watch` only recompiles TypeScript. Run `bun run build` after you change
-the manifest or a static file. A new HTML, CSS, or image file also needs an
-entry in `STATIC_ASSETS` in `scripts/copy-static.mjs`.
-
-Every module that `content.js` imports, directly or through another module,
-has to be listed in `web_accessible_resources` in `manifest.json`. The tests
-fail if one is missing.
-
-## Load the extension
-
-### Chrome, Edge, Brave, and other Chromium browsers
-
-1. Open `chrome://extensions`, or your browser's extensions page.
-2. Turn on **Developer mode**.
-3. Choose **Load unpacked**.
-4. Select this project's `dist/` directory.
-
-### Firefox
-
-Build for Firefox first:
-
-```bash
-bun run build:firefox
-```
-
-Then:
-
-1. Open `about:debugging#/runtime/this-firefox`.
-2. Select **Load Temporary Add-on…**.
-3. Choose `dist/manifest.json`.
-
-Firefox drops temporary add-ons when it restarts.
-
-To publish on [addons.mozilla.org](https://addons.mozilla.org/developers/),
-upload the `.xpi` from `bun run package:firefox`. AMO only takes `.zip`,
-`.xpi`, and `.crx` files. Upload the unpacked `dist/` folder or any other file
-type and it fails with "Your add-on should end with .zip, .xpi or .crx".
-
-## Project layout
-
-```
-manifest.json          MV3 manifest; copy-static.mjs derives the Firefox variant
-src/
-├── background.ts      service worker (Chrome) / background script (Firefox)
-├── content-loader.ts  classic content script that imports content.js as a module
-├── content.ts         page behaviour, switched on and off per site
-├── browser.ts         chrome/browser API shim
-├── storage.ts         settings and site overrides in sync storage
-├── host.ts            per-site enablement
-├── popup/             toolbar popup
-├── options/           settings page
-├── shared/            helpers shared by the pages
-└── ui/                portable UI kit (see src/ui/README.md)
-scripts/               build, icon, and packaging scripts
-tests/                 node --test suites, run against dist/
-store/                 store listing copy
-```
-
-## Storage and permissions
-
-- Settings and per-site overrides live in `storage.sync`. If the user has
-  browser sync on, the browser copies them to their other devices.
-- The extension asks for access to all URLs so the content script can run on
-  any site. Users can turn it off everywhere or for one site.
-- In Chrome, any web page can tell the extension is installed by fetching one
-  of its web-accessible modules. The extension ID is fixed, so the URL is
-  predictable. Chrome's `use_dynamic_url` would hide it, but Chrome resolves a
-  module's relative imports against the fixed ID, so the content script stops
-  loading. Firefox gives each install a random ID, so it isn't affected.
+- `watch` skips the manifest and static files, so rerun `build` after changing them. New HTML, CSS, or images also need an entry in `STATIC_ASSETS` in `scripts/copy-static.mjs`.
+- Every module `content.js` imports must be listed in `web_accessible_resources`. The tests fail if one is missing.
+- AMO only accepts `.zip`, `.xpi`, or `.crx`. Upload the `.xpi` from `package:firefox`, not `dist/`.
+- In Chrome, any page can detect the extension by fetching a web-accessible module at its fixed ID. `use_dynamic_url` would hide it but breaks the content script's relative imports. Firefox randomizes the ID per install.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
