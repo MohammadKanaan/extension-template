@@ -392,6 +392,26 @@
   border-color: var(--ui-color-danger);
 }
 
+/* Hidden until showToast() adds the visible modifier. */
+.ui-toast {
+  position: fixed;
+  bottom: var(--ui-space-6);
+  left: 50%;
+  z-index: 20;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--ui-space-6));
+  opacity: 0;
+  translate: -50% var(--ui-space-4);
+  transition:
+    opacity var(--ui-motion-slow) ease,
+    translate var(--ui-motion-slow) var(--ui-motion-ease-out);
+}
+
+.ui-toast--visible {
+  opacity: 1;
+  translate: -50% 0;
+}
+
 .ui-toast__action {
   padding: var(--ui-space-1) var(--ui-space-4);
   color: var(--ui-color-accent);
